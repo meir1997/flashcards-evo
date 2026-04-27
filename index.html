@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>פסיכולוגיה אבולוציונית – כרטיסיות</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: #0d0d14;
+    color: #e8e8f0;
+    font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+    direction: rtl;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 60px;
+  }
+  h1 {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 900;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #6ee7a0, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+  }
+  .subtitle { color: #7070a0; font-size: 0.85rem; text-align: center; margin-bottom: 24px; }
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center; margin-bottom: 20px;
+    max-width: 680px; width: 100%;
+  }
+  .filter-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(110,231,160,0.15);
+    background: #16161f; color: #7070a0; font-size: 0.8rem;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .filter-btn.active {
+    border-color: #6ee7a0; background: rgba(110,231,160,0.12); color: #6ee7a0;
+  }
+  .progress-wrap { width: 100%; max-width: 680px; margin-bottom: 16px; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 0.78rem; color: #7070a0; margin-bottom: 6px; }
+  .progress-info span.known { color: #6ee7a0; }
+  .progress-bar { height: 3px; background: #16161f; border-radius: 2px; }
+  .progress-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, #6ee7a0, #a78bfa);
+    transition: width 0.3s;
+  }
+  .card {
+    width: 100%; max-width: 680px; min-height: 260px;
+    cursor: pointer; border-radius: 16px; padding: 28px 24px;
+    background: #1c1c2e; border: 1px solid rgba(110,231,160,0.15);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; margin-bottom: 20px; position: relative;
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+  .card.flipped { background: #0e1f16; }
+  .card.animate { opacity: 0; transform: translateY(8px); }
+  .lec-badge {
+    position: absolute; top: 14px; right: 14px;
+    border-radius: 8px; padding: 2px 10px;
+    font-size: 0.65rem; font-weight: 700;
+  }
+  .known-badge {
+    position: absolute; top: 14px; left: 14px;
+    background: rgba(110,231,160,0.15); color: #6ee7a0;
+    border-radius: 8px; padding: 2px 10px;
+    font-size: 0.65rem; font-weight: 700;
+  }
+  .card-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 14px; padding: 3px 10px;
+    border-radius: 10px;
+  }
+  .card-label.q { background: rgba(167,139,250,0.15); color: #a78bfa; }
+  .card-label.a { background: rgba(110,231,160,0.15); color: #6ee7a0; }
+  .card-q {
+    font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 700;
+    line-height: 1.6; color: #e8e8f0; margin-bottom: 10px;
+  }
+  .card-hint { font-size: 0.75rem; color: #7070a0; margin-top: 4px; }
+  .card-a {
+    font-size: clamp(0.88rem, 2.5vw, 1rem); line-height: 1.8;
+    color: #c8f0d8; text-align: right; width: 100%;
+    white-space: pre-line;
+  }
+  .controls {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    justify-content: center; max-width: 680px; width: 100%;
+  }
+  .btn {
+    padding: 10px 20px; border-radius: 10px;
+    font-size: 0.9rem; font-family: inherit;
+    font-weight: 600; cursor: pointer;
+  }
+  .btn-prev { border: 1px solid rgba(110,231,160,0.15); background: #16161f; color: #7070a0; }
+  .btn-known { border: 1px solid rgba(110,231,160,0.3); background: rgba(110,231,160,0.08); color: #6ee7a0; }
+  .btn-shuffle { border: 1px solid rgba(245,158,11,0.25); background: #16161f; color: #f59e0b; }
+  .btn-next { border: none; background: linear-gradient(135deg,#6ee7a0,#3dd68c); color: #0d1f14; font-weight: 700; }
+  .stats { display: flex; gap: 28px; margin-top: 20px; font-size: 0.78rem; color: #7070a0; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 1.1rem; font-weight: 700; color: #e8e8f0; }
+  .kb-hint { margin-top: 14px; font-size: 0.7rem; color: #7070a0; opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<div style="text-align:center; margin-bottom:0; max-width:680px; width:100%">
+  <h1>פסיכולוגיה אבולוציונית</h1>
+  <p class="subtitle" id="subtitle">שיעורים 1–3 · 54 כרטיסיות</p>
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span id="prog-counter">1 מתוך 54</span>
+    <span class="known" id="prog-known">ידועות: 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:2%"></div></div>
+</div>
+
+<div class="card" id="card" onclick="flipCard()">
+  <div class="lec-badge" id="lec-badge"></div>
+  <div class="known-badge" id="known-badge" style="display:none">✓ ידוע</div>
+  <div class="card-label q" id="card-label">שאלה</div>
+  <div class="card-q" id="card-q"></div>
+  <div class="card-hint" id="card-hint">לחץ לגילוי התשובה</div>
+  <div class="card-a" id="card-a" style="display:none"></div>
+</div>
+
+<div class="controls">
+  <button class="btn btn-prev" onclick="prev()">← הקודמת</button>
+  <button class="btn btn-known" onclick="markKnown()">✓ ידוע</button>
+  <button class="btn btn-shuffle" onclick="shuffle()">⇄ ערבב</button>
+  <button class="btn btn-next" onclick="next()">הבאה →</button>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num" id="stat-total">54</div>סה"כ</div>
+  <div class="stat"><div class="stat-num" id="stat-known">0</div>ידועות</div>
+  <div class="stat"><div class="stat-num" id="stat-left">54</div>נותרות</div>
+</div>
+
+<div class="kb-hint">מקלדת: רווח = הפוך &nbsp;|&nbsp; ←→ = ניווט &nbsp;|&nbsp; K = ידוע</div>
+
+<script>
+const ALL_CARDS = [
+  {id:1,lecture:1,topic:"foundations",q:"מה המטרה המרכזית של פסיכולוגיה אבולוציונית?",a:"להציע מסגרת התייחסות אחידה שתעטוף את כל הדיסציפלינות ותסביר: למה המנגנונים הפסיכולוגיים מעוצבים כך, איך הם מעוצבים, ומה הם נועדו לעשות."},
+  {id:2,lecture:1,topic:"foundations",q:"מהן 2 הטענות המרכזיות של לאמרק?",a:"1. השתנות לשיפור – המינים משתפרים לאורך זמן.\n2. הורשת תכונות נרכשות – אם התאמצת לרכוש תכונה (כמו הגירפה שמאריכה צווארה), תעביר אותה לצאצאים."},
+  {id:3,lecture:1,topic:"foundations",q:"מהם 3 מרכיבי תיאוריית הברירה הטבעית של דרווין?",a:"שונות – קיים גיוון בתכונות בין פרטים\nהורשה – תכונות עוברות לצאצאים\nברירה – הסביבה מסננת: מי שתכונתו מותאמת יותר – ישרוד וירבה"},
+  {id:4,lecture:1,topic:"foundations",q:"מהי ברירה זוויגית? מה ההבדל מברירה טבעית?",a:"ברירה טבעית = מי שורד.\nברירה זוויגית = מי מצליח להתרבות. כוללת:\n• תחרות תוך-מינית (זכרים מול זכרים)\n• תחרות בין-מינית (להרשים ולהיבחר על ידי בת הזוג)"},
+  {id:5,lecture:1,topic:"foundations",q:"מה 3 מנגנוני הסחף הגנטי?",a:"• מוטציות – שינויים אקראיים ב-DNA\n• אפקט המייסד – אוכלוסייה חדשה שנוסדה ממדגם קטן לא מייצג\n• אפקט צוואר הבקבוק – מדגם קטן שרד קטסטרופה במקרה, לא בשל יתרון"},
+  {id:6,lecture:1,topic:"foundations",q:"מה ההבדל בין מנגנון מקורב למנגנון אולטימטיבי?",a:"מנגנון מקורב (Proximate) – ההתנהגות הקונקרטית שהאורגניזם עושה כעת (קפיצה למים להצלת אח).\nמנגנון אולטימטיבי (Ultimate) – למה התכונה טובה לאורך דורות מנקודת מבט הגן (שמירת עותקים גנטיים)."},
+  {id:7,lecture:1,topic:"bio",q:"מהי 'כשירות כוללת' (Inclusive Fitness) של המילטון?",a:"הרחבת הברירה הטבעית: לא רק שרידות ורבייה עצמית, אלא גם הגנה על קרובים גנטיים.\nנוסחא: C < b × r\n(עלות לעצמי < תועלת לאחר × קרבה גנטית)\nלדוגמה: כדאי לסכן חיים להציל 3 אחים (r=0.5 × 3 > 1)."},
+  {id:8,lecture:1,topic:"bio",q:"מהו אלטרואיזם הדדי של טריוורס?",a:"עזרה לאדם שאינו קרוב גנטית, על בסיס ציפייה להחזרת הטובה.\nמנגנון: מישהו עוזר לי → שמחה + תחושת מחויבות → החזרת טובה → מערכת יחסים הדדית.\nנקרא גם 'אלטרואיזם מותנה'."},
+  {id:9,lecture:1,topic:"bio",q:"מה מתאר משחק 'אבן-נייר-מספריים' של לטאות הצבעוניות?",a:"זכרים בצבעים שונים עם אסטרטגיות שונות:\n• כתום = אגרסיבי, נקבות רבות\n• כחול = מונוגמי ואמין\n• צהוב = חמקן שמתחזה לנקבה\nהצבע הדומיננטי מתחלף כל ~5 שנים – דוגמה לאסטרטגיות תלויות-שכיחות."},
+  {id:10,lecture:1,topic:"psych",q:"מה תרם ווילאם ג'יימס לדיון על אינסטינקטים?",a:"ג'יימס – 'אבי הפסיכולוגיה המערבית' – טען שלאדם יש יותר אינסטינקטים מכל יונק אחר, כולל: בכי, יניקה, ביישנות, חיברות, אהבה, פחד מנחשים, גבהים ועוד."},
+  {id:11,lecture:1,topic:"psych",q:"כיצד פרויד חילק אינסטינקטים? מה הקשר לדרווין?",a:"אינסטינקטי חיים: משמרי-חיים (מזון, מים, מחסה) + מיניים (יצרני-חיים).\nאינסטינקטי מוות: הרס עצמי, ספורט מסוכן.\nפרויד רצה לבסס פסיכולוגיה על דרווין: הישרדות = משמרי-חיים, רבייה = מיניים."},
+  {id:12,lecture:1,topic:"psych",q:"מדוע אפקט גרסיה (Garcia Effect) ערער על הביהביוריזם?",a:"עכברים למדו להימנע ממזון לאחר חשיפה אחת לבחילה, אך לא למדו לקשר בחילה לאור או צליל.\nמסקנה: יש דברים שקל לנו ללמוד יותר מאחרים – עיבוד מידע אינו כללי אלא domain-specific."},
+  {id:13,lecture:1,topic:"psych",q:"מה ההבדל בין Domain-general ל-Domain-specific?",a:"Domain-general (ביהביוריזם + קוגניטיבי) – מנגנון אחד לכל סוגי למידה, לא תלוי תוכן.\nDomain-specific (פסיכו' אבולוציונית) – מנגנונים שונים, כל אחד רגיש לקלט ספציפי הקשור להישרדות/רבייה."},
+  {id:14,lecture:1,topic:"psych",q:"מה דפוס הפעולה הקבוע (Fixed Action Pattern) ומה דוגמה לו?",a:"תגובה אוטומטית לקלט ספציפי – תמיד אותה פעולה. דוגמה: אמא שחף תמיד הופכת ביצה כשגוזל בוקע – אחרת הטורפים מזהים את הביצים. הדוגמה הוכחה בניסוי של הפיכת הביצים בחזרה."},
+  {id:15,lecture:1,topic:"psych",q:"מה ההחתמה (Imprinting) של לורנץ ומה שאלות המחקר הפתוחות?",a:"ברווזים נקשרים לדמות הראשונה שרואים אחרי בקיעה (גם לאדם). ההיקשרות נשמרת בבגרות.\nשאלות פתוחות: האם מבוסס על קווי מתאר? תנועה ביולוגית? האם יש חריגים לטורפים? – עדיין נחקר."},
+  {id:16,lecture:2,topic:"adaptations",q:"מהם 3 תוצרי האבולוציה? הסבר כל אחד עם דוגמה.",a:"הסתגלות – תכונה עם יתרון אבולוציוני (חבל הטבור).\nתוצר לוואי – תכונה שנובעת מהסתגלות אחרת, ללא פונקציה עצמאית (פופיק).\nרעש – הבדלים ניטרליים; לפעמים מוטציות מזיקות (צורת הפופיק)."},
+  {id:17,lecture:2,topic:"adaptations",q:"מהם 5 מאפייני ההסתגלות?",a:"1. יש לה גנים מתאימים לצורך העברה לצאצאים\n2. מתפתחת באופן מהימן בתוך המין\n3. עשויה להופיע בגיל שונה (לא חייב בלידה)\n4. פותרת בעיה הישרדותית או זוויגית ספציפית\n5. יש לה EEA – היסטוריה אבולוציונית שאפשר לתאר"},
+  {id:18,lecture:2,topic:"adaptations",q:"מה EEA ומה חשיבותו?",a:"Environment of Evolutionary Adaptedness – הסביבה ההיסטורית שבה התפתחה תכונה.\nחשוב כי:\n• מאפשר תיארוך (עין = 500 מיליון שנה)\n• מסביר מדוע הסתגלות עלולה להזיק בסביבה מודרנית (רגישות לסוכר)\n• בסיס לבדיקת השערות"},
+  {id:19,lecture:2,topic:"adaptations",q:"מה תיאוריית ההשקעה ההורית של טריוורס? מה התחזית?",a:"המין שמשקיע יותר בגידול צאצאים יהיה בררן יותר בבחירת בן/בת זוג.\nתחזית: נקבה (משקיעה יותר ביונקים) = בררנית; זכר = תחרותי.\nחריג: סוסוני ים – הזכר נושא ביצים ← הוא הבררן."},
+  {id:20,lecture:2,topic:"adaptations",q:"מה ההבדל בין מינים Tournament ל-Pair-bonded?",a:"Tournament – תחרות על ההורה המשקיע: הבדלים פיזיים גדולים בין זכר לנקבה, אגרסיביות גבוהה (טווסים).\nPair-bonded – שניהם משקיעים: הבדלים פיזיים קטנים, אבות טובים, אגרסיביות נמוכה."},
+  {id:21,lecture:2,topic:"adaptations",q:"מהן 4 השיטות העיקריות לבחון השערות אבולוציוניות?",a:"1. גנטיות – תיארוך EEA, מעקב אחר התפתחות איברים\n2. פילוגנטיות – עץ החיים, מציאת אב קדמון משותף\n3. השוואתיות – השוואה בין מינים/אוכלוסיות בסביבות שונות\n4. בין-תרבותיות – מציאת אוניברסלים בין חברות אנושיות שונות"},
+  {id:22,lecture:2,topic:"adaptations",q:"כיצד ניתן להפריך את תיאוריית הברירה הטבעית? ג'ן 3 דוגמאות.",a:"1. איבר מורכב שהתפתח בזמן קצר מדי\n2. מין שנועד להועיל רק לאחרים (ולא לעצמו)\n3. זכרים שרק מסייעים לזכרים אחרים למצוא בנות זוג\nלא נמצא כזה – התיאוריה עומדת."},
+  {id:23,lecture:2,topic:"adaptations",q:"מה מגלה ניסוי ההשוואה בין ילדים לשימפנזים?",a:"בתפיסת העולם הפיזי (כמויות, סיבה-תוצאה) – ילדים ושימפנזים דומים.\nבתפיסת העולם החברתי (הבנת כוונות, עזרה, הסקה חברתית) – לילדים אנושיים יתרון מובהק.\nמסקנה: הקוגניציה החברתית שלנו ייחודית."},
+  {id:24,lecture:3,topic:"food",q:"מהי 'דילמת אוכל-הכל' של פול רוזין?",a:"המתח של כל יצור אוכל-הכל בין:\n• נאופיליה – משיכה לדברים חדשים (להעשיר את הדיאטה)\n• נאופוביה – פחד מדברים חדשים (להימנע מרעלים)\nחולדות טועמות מזון חדש בביסים קטנים, ולאחר בחילה נמנעות ממנו לחלוטין אחרי חשיפה אחת."},
+  {id:25,lecture:3,topic:"food",q:"מהי ה'מערכת החיסונית ההתנהגותית'? טריגרים ותגובות.",a:"Behavioral Immune System – מערכת שנועדה להימנע ממחלות דרך גועל.\nטריגרים: מזון רקוב, הפרשות גוף, חיות נושאות חיידקים, היגיינה נמוכה.\nתגובה: רגשית (גועל, פרצוף) + קוגניטיבית (זכרון 'מה נגע במה') + פיזיולוגית (הקאה)"},
+  {id:26,lecture:3,topic:"food",q:"מה 'היפותזת הגנת העובר'? מה 4 עדויותיה?",a:"בחילות בהיריון = הסתגלות שמגנה על העובר:\n1. נמנעים ממזון המועד לזיהום (בשר, אלכוהול) – לא ממתוקים\n2. שיא הבחילות בשבועות 3–14 – התקופה הקריטית לעובר\n3. ב-7 שבטים שמאכלם תירס – אין בחילות (סיכון נמוך ממילא)\n4. נשים ללא בחילות – סיכון להפלה שקטה גבוה פי 3"},
+  {id:27,lecture:3,topic:"food",q:"מה ההיפותזה האנטי-מיקרובית לגבי תבלינים?",a:"שימוש בתבלינים נועד לחיסול בקטריות.\nעדויות: עיקר השימוש בבשר (הכי רגיש); מדינות חמות – יותר תבלינים; מדינות קרות – פחות.\nהמנגנון: למידה תרבותית (מסבתא) ולא אינסטינקט גנטי."},
+  {id:28,lecture:3,topic:"food",q:"מהי 'היפותזת השיכור החמור' (Drunken Monkey)?",a:"הרגישות לאלכוהול היא תוצר לוואי:\nאבותינו היו רגישים לפירות בשלים בגלל הסוכר והתזונה שבהם.\nפרמנטציה יוצרת אלכוהול בפירות בשלים → כתוצאת לוואי התפתחה רגישות לאלכוהול."},
+  {id:29,lecture:3,topic:"food",q:"מהי היפותזת הציד מול הליקוט? מה מבדיל ביניהן?",a:"שתיהן מסבירות התפתחות אינטליגנציה ושפה.\nציד: בשר = 40% מהדיאטה; עדויות ארכיאולוגיות; מסביר שיתוף פעולה, אלטרואיזם, חלוקת עבודה.\nליקוט: כלים נוצרו לחפירה לפני ציד; עם מעבר לסוואנה פנו לציד.\nהכרעה לא הוכרעה – ציד דומיננטי יותר בספרות."},
+  {id:30,lecture:3,topic:"food",q:"מה ההבדלים בין גברים לנשים במשימות מרחביות? איך קשור לציד/ליקוט?",a:"גברים טובים יותר ב: סיבוב מנטלי, ניווט, הצבעה על כיוון.\nנשים טובות יותר ב: זיכרון פריטים ורצפים, הבחנה בגוונים, ריחות.\n→ ניסוי ב-40 מדינות: נשים הצטיינו בזיהוי פריטים שהחליפו מקום (36/40).\nהסבר: ציד דורש ניווט, ליקוט דורש זיכרון מרחב קרוב."},
+  {id:31,lecture:3,topic:"survival",q:"מה היפותזת הסוואנה (Orians & Heerwagen)? מה 3 השלבים?",a:"אנו מועדפים לסביבה שמשלבת שטח פתוח + מסתורים + מגוון מזון.\n3 שלבים:\n1. בחירה – דחיה מהירה של סביבה מסוכנת/סבוכה\n2. שיטוט – חיפוש מים ומסתורים בשבילים מעוקלים\n3. ניצול – שימוש בסביבה שנבחרה"},
+  {id:32,lecture:3,topic:"survival",q:"מהן 6 תגובות ה-FFFSFF מול איום?",a:"Fight – להילחם\nFlight – לברוח\nFreeze – לקפוא\nFawn – להתחבב/לפייס את התוקף (נפוץ יותר אצל נשים)\nFright – להעמיד פני מת (כמו האנטילופה)\nFaint – להתעלף (מתועד רק בבני אדם)"},
+  {id:33,lecture:3,topic:"survival",q:"מה ההטיות בתפיסת גובה ומרחק? מה ערכן האבולוציוני?",a:"גובה: מלמטה = מדויק; מלמעלה = הערכת יתר. ערך: מונעת קפיצות מסוכנות.\nמרחק קול: מקור מתרחק = מדויק; מתקרב = הערכה שהוא קרוב יותר. ערך: שמרנות מול איומים מתקרבים."},
+  {id:34,lecture:3,topic:"survival",q:"מה תיאוריית ההזדקנות של וויליאמס? מה גנים פליאוטרופיים?",a:"גנים פליאוטרופיים = גנים עם יותר מתפקיד אחד.\nדוגמה: טסטוסטרון מועיל לתחרות ורבייה בגיל הפריון, אך קשור למחלות סרטניות מאוחר יותר.\nמסקנה: אבולוציה מעדיפה גנים שמקסימים הבאת צאצאים בגיל ממוצע, גם על חשבון אריכות ימים."},
+  {id:35,lecture:3,topic:"survival",q:"למה גברים מתים ~7 שנים לפני נשים? (הסבר אבולוציוני)",a:"שונות ברבייה אצל גברים גדולה יותר (0 עד אינסוף צאצאים לעומת מקסימום ביולוגי לנשים).\n→ אבולוציה מעדיפה לגברים גנים שמקסימים תחרות ורבייה, גם במחיר חיים קצרים יותר."},
+  {id:36,lecture:3,topic:"survival",q:"מה השערת אובדנות כהסתגלות (קטנזרו)? מה 3 הגורמים?",a:"מנקודת מבט הגן: בנסיבות מסוימות כדאי לגנים לסיים את נשאם.\nגורמים:\n1. עתיד בריאותי קשה (לא יוכל לשמר גנים)\n2. עתיד זוויגי כושל\n3. הפרט מהווה נטל על קרובים גנטיים שלו\nמתאמים: +0.56 עם תחושת נטל; -0.67 עם פחות קשרים מיניים."},
+  {id:37,lecture:3,topic:"survival",q:"מה ההבדל בין קטנזרו לגד סאד בנושא אובדנות?",a:"קטנזרו – אובדנות כהסתגלות: שמירת ההעתקים הגנטיים על ידי הסרת נטל.\nגד סאד – אובדנות כתוצר לוואי: תמיד יש סיכוי לעתיד טוב, אז זה לא מועיל. הטריגרים (אובדן מוניטין לגברים, אובדן קשרים לנשים) הם תגובות מוגזמות לאובדנים רלוונטיים אבולוציונית."},
+  {id:38,lecture:1,topic:"psych",q:"מהי האתולוגיה? מה חקרה ומי היו חוקריה המרכזיים?",a:"אתולוגיה = חקר ההתנהגות הביולוגית של בעלי חיים בסביבתם הטבעית ('Ethos' = אופי, 'Logia' = חקר).\nניסתה להבין 'למה' בעלי חיים מתנהגים כפי שהם.\nחוקרים מרכזיים: קארל פון פריש, קונרד לורנץ, ניקולאס טינברגן (חלוצי שנות ה-50)."},
+  {id:39,lecture:1,topic:"psych",q:"מה טענות הביהביוריזם הרדיקלי (סקינר, שנות ה-60)?",a:"• לדחות כל מה שלא ניתן למדידה: אינסטינקטים, דחפים פנימיים, מצבים מנטליים.\n• רק יכולת למידה כללית היא מולדת.\n• בני אדם הם תוצר הסביבה בלבד – ניתנים לעיצוב דרך גירוי ותגמול/ענישה."},
+  {id:40,lecture:1,topic:"psych",q:"מה גרם לנפילת הביהביוריזם בשנות ה-70?",a:"שתי תגליות מרכזיות:\n1. אפקט גרסיה – 'אסוציאציות סלקטיביות' בחולדות: קלים ללמוד חלק מהקשרים ולא אחרים.\n2. מחקרי קופי הארלו (Harlow) – קופים מעדיפים 'אם' רכה וחמה על פני 'אם' נותנת אוכל = צורך במגע אינו מותנה.\nמסקנה: אם יש דברים שקל ללמוד יותר, חייבים לחזור ולחקור אינסטינקטים ומנגנונים פנימיים."},
+  {id:41,lecture:1,topic:"psych",q:"מה המהפכה הקוגניטיבית (שנות ה-80) תרמה לפסיכולוגיה אבולוציונית?",a:"הפכה לגיטימי 'להסתכל בתוך הראש'.\nאך היא יצרה בעיה חדשה: במקום 'למידה כללית' (סקינר) → 'עיבוד מידע כללי'.\nהפתרון שהוביל לפסיכו' אבולוציונית: ייתכן שיש קלאסות מועדפות של מידע שמנגנוני הקוגניציה מעוצבים לעבד – כלומר מנגנונים Domain-specific."},
+  {id:42,lecture:1,topic:"foundations",q:"מה 2 שגיאות נפוצות בהבנת ברירה טבעית?",a:"שגיאה 1: 'ברירה טבעית היא תהליך מקרי' – שגוי! מוטציות הן אקראיות, אך הברירה עצמה אינה.\nשגיאה 2: 'ברירה טבעית עוסקת בעיקר בשרידות' – שגוי! היא עוסקת בהצלחה רבייתית דיפרנציאלית."},
+  {id:43,lecture:2,topic:"adaptations",q:"מה 4 הדרישות מתיאוריה מדעית טובה (מדע כסיפור)?",a:"1. עקבית עם ידע קיים\n2. מאפשרת חיזוי אירועים עתידיים\n3. חסכונית (Parsimonious) – הסבר פשוט ככל האפשר\n4. ניתנת להפרכה (Falsifiable)\nהמטרה אינה 'האמת' אלא סיפור שמסביר ומנבא."},
+  {id:44,lecture:2,topic:"adaptations",q:"מהו מנגנון פסיכולוגי מתפתח (EPM)? מה 3 מאפייניו המרכזיים?",a:"Evolved Psychological Mechanism – מנגנון שנוצר על ידי ברירה טבעית.\n1. פותר בעיית הישרדות/זיווג ספציפית.\n2. מעוצב לעיבוד 'פרוסה צרה' של מידע (domain-specific).\n3. הקלט הוא 'תזכורת לא מודעת' לבעיה אדפטיבית → מפעיל תגובה ספציפית (IF → THEN).\nדוגמה פיזית: העין רגישה לתדרים, קווים ותנועה – לא 'מכשיר ראייה כללי'."},
+  {id:45,lecture:2,topic:"adaptations",q:"מה 4 רמות הניתוח האבולוציוני (מרמה 1 עד 4)?",a:"רמה 1 – תיאוריה אבולוציונית כללית (ברירה טבעית)\nרמה 2 – תיאוריות ביניים (כמו: תיאוריית השקעה הורית, אלטרואיזם הדדי)\nרמה 3 – השערות ספציפיות הנגזרות מהתיאוריות (למשל: מין משקיע יותר = בררני יותר)\nרמה 4 – תחזיות בודדות שניתן לבדוק ולהפריך"},
+  {id:46,lecture:2,topic:"adaptations",q:"מה ההבדל בין אסטרטגיה Top-Down ל-Bottom-Up ביצירת השערות אבולוציוניות?",a:"Top-Down: מתחילים מתיאוריה (כמו ברירה טבעית) ומסיקים השערות ממנה.\nBottom-Up: מזהים תופעה מעניינת בשטח ושואלים מה הערך האדפטיבי שלה (גישת האתולוגיה).\nשתי הגישות משלימות."},
+  {id:47,lecture:2,topic:"adaptations",q:"מה 4 מקורות הנתונים לבדיקת השערות אבולוציוניות?",a:"1. ממצאים ארכיאולוגיים (פציעות, מחלות, מוות)\n2. חברות ציידים-לקטים\n3. תצפיות אנתרופולוגיות\n4. תרבות אנושית עממית (פרסום, פוליטיקה, פולקלור, טקסים)"},
+  {id:48,lecture:2,topic:"adaptations",q:"מה 3 הדרכים לזיהוי בעיות אדפטיביות?",a:"1. עקרונות הברירה הטבעית והזוויגית (בעיות הישרדות, זיווג, הורות, עזרה לקרובים)\n2. מבנים חברתיים אוניברסליים (קבוצות והיררכיות – כיצד להצטרף, לשמור על מעמד)\n3. חברות מסורתיות + מנגנונים פסיכולוגיים קיימים"},
+  {id:49,lecture:2,topic:"adaptations",q:"מה שיטת הניסוי הפיזיולוגית בבדיקת השערות? תן 2 דוגמאות.",a:"בדיקת הקשר בין מדדים פיזיולוגיים להתנהגות אבולוציונית.\nדוגמה 1: רמת טסטוסטרון ↓ אצל גברים בזוגיות רצינית (תחרות מיני < אחרי בחירת בת זוג).\nדוגמה 2: מערכת הדופמין מסבירה הבדלי מגדר בהעדפות חברתיות."},
+  {id:50,lecture:3,topic:"food",q:"מה 4 תחזיות היפותזת המחלות-הימנעות (Rozin) לגבי גועל?",a:"1. גועל יופעל על ידי חומרים נושאי מחלה\n2. מעוררי הגועל יהיו אוניברסליים בין-תרבותיים\n3. גועל יפעיל את המערכת החיסונית\n4. רגישות גועל גבוהה = פחות מחלות (נשים > גברים ברגישות גועל)\nפלט: עיוות פנים, יריקה, הקאה, שיעול, עיטוש, שלשול."},
+  {id:51,lecture:3,topic:"food",q:"מה היפותזת הבישול (Wrangham)? מה 4 הטיעונים בעדה?",a:"הבישול היה מרכזי להתפתחות האדם המודרני.\n1. ערך אנרגטי עצום של מזון מבושל\n2. עיכול קל יותר\n3. אוניברסלי אנושי\n4. מזון נא אינו מספיק (לא למוח ולא בכלל)\nתחזית: שימוש מכוון באש אמור להתאים להופעת Homo Erectus (ממצאים: 200-500 אלף שנה ל~1 מיליון שנה)."},
+  {id:52,lecture:3,topic:"survival",q:"מה 'Tend & Befriend' של טיילור? מה הקשר לתגובות לאיום?",a:"תגובה שישית לסכנה (מעבר ל-FFFSFF): התחברות והגנה.\nבמקום להילחם/לברוח → טיפול בצאצאים + יצירת ברית חברתית מגוננת.\nנפוצה יותר בנשים.\nיש להוסיף 'TB' לרשימת התגובות: Fight, Flight, Freeze, Fawn, Fright, Faint + Tend & Befriend."},
+  {id:53,lecture:3,topic:"survival",q:"מה 'היפותזת העין השיתופית' (Cooperative Eye Hypothesis) של טומאסלו?",a:"לבני אדם (בניגוד לשימפנזים) יש סקלרה לבנה בעיניים – כך ניתן לראות לאן האחר מסתכל.\nזה מאפשר שיתוף כוונות ולמידה חברתית עמוקה.\nהשוואה: שימפנזים עוקבים אחרי הראש; בני אדם עוקבים אחרי העיניים."},
+  {id:54,lecture:3,topic:"survival",q:"מה הסבר 'חשבון ההשקעות' (אנטגוניסטי-פליאוטרופי) לסיבות הזדקנות?",a:"גנים פליאוטרופיים עם יתרון בגיל הפריון עשויים להזיק מאוחר יותר.\nהברירה הטבעית 'אינה יכולה' לראות מעבר לגיל ההולדה של צאצאים – לכן גנים מזיקים מאוחרים 'מחמיצים' את הברירה.\nמסקנה: אבולוציה מקסמת כשירות בגיל ממוצע, ולאחר מכן הגוף מידרדר."}
+];
+
+const TOPICS = [
+  {id:"all",label:"הכול"},
+  {id:"foundations",label:"יסודות ודרווין"},
+  {id:"bio",label:"ביולוגיה"},
+  {id:"psych",label:"רגל פסיכולוגית"},
+  {id:"adaptations",label:"הסתגלויות"},
+  {id:"food",label:"מזון"},
+  {id:"survival",label:"הישרדות"}
+];
+
+const LEC_COLORS = {
+  1:{bg:"#2d1b69",border:"#7c3aed",text:"#c4b5fd",label:"שיעור 1"},
+  2:{bg:"#1c1a0d",border:"#d97706",text:"#fcd34d",label:"שיעור 2"},
+  3:{bg:"#0a1f14",border:"#059669",text:"#6ee7a0",label:"שיעור 3"}
+};
+
+let filter = "all";
+let cards = [...ALL_CARDS];
+let idx = 0;
+let flipped = false;
+let known = new Set();
+
+function getFiltered() {
+  return filter === "all" ? ALL_CARDS : ALL_CARDS.filter(c => c.topic === filter);
+}
+
+function buildFilters() {
+  const wrap = document.getElementById("filters");
+  wrap.innerHTML = "";
+  TOPICS.forEach(t => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (filter === t.id ? " active" : "");
+    btn.textContent = t.label;
+    btn.onclick = () => setFilter(t.id);
+    wrap.appendChild(btn);
+  });
+}
+
+function setFilter(f) {
+  filter = f;
+  cards = getFiltered();
+  idx = 0; flipped = false; known = new Set();
+  buildFilters();
+  render();
+}
+
+function render() {
+  const card = cards[idx];
+  if (!card) return;
+  const lc = LEC_COLORS[card.lecture];
+  const progress = cards.length ? ((idx+1)/cards.length*100) : 0;
+
+  document.getElementById("prog-counter").textContent = `${idx+1} מתוך ${cards.length}`;
+  document.getElementById("prog-known").textContent = `ידועות: ${known.size}`;
+  document.getElementById("prog-fill").style.width = progress + "%";
+
+  const cardEl = document.getElementById("card");
+  cardEl.className = "card" + (flipped ? " flipped" : "");
+  cardEl.style.border = `1px solid ${flipped ? lc.border : "rgba(110,231,160,0.15)"}`;
+  cardEl.style.background = flipped ? "#0e1f16" : "#1c1c2e";
+
+  const badge = document.getElementById("lec-badge");
+  badge.textContent = lc.label;
+  badge.style.background = lc.bg;
+  badge.style.border = `1px solid ${lc.border}`;
+  badge.style.color = lc.text;
+
+  document.getElementById("known-badge").style.display = known.has(card.id) ? "block" : "none";
+
+  const label = document.getElementById("card-label");
+  label.textContent = flipped ? "תשובה" : "שאלה";
+  label.className = "card-label " + (flipped ? "a" : "q");
+
+  document.getElementById("card-q").textContent = card.q;
+  document.getElementById("card-q").style.display = flipped ? "none" : "block";
+  document.getElementById("card-hint").style.display = flipped ? "none" : "block";
+  document.getElementById("card-a").textContent = card.a;
+  document.getElementById("card-a").style.display = flipped ? "block" : "none";
+
+  document.getElementById("stat-total").textContent = cards.length;
+  document.getElementById("stat-known").textContent = known.size;
+  document.getElementById("stat-left").textContent = cards.length - known.size;
+  document.getElementById("subtitle").textContent = `שיעורים 1–3 · ${ALL_CARDS.length} כרטיסיות`;
+}
+
+function animateGo(newIdx) {
+  const cardEl = document.getElementById("card");
+  cardEl.classList.add("animate");
+  setTimeout(() => {
+    idx = newIdx; flipped = false;
+    cardEl.classList.remove("animate");
+    render();
+  }, 150);
+}
+
+function next() { animateGo((idx+1) % cards.length); }
+function prev() { animateGo((idx-1+cards.length) % cards.length); }
+function flipCard() { flipped = !flipped; render(); }
+
+function markKnown() {
+  if (!cards[idx]) return;
+  known.add(cards[idx].id);
+  next();
+}
+
+function shuffle() {
+  cards = [...cards].sort(() => Math.random()-0.5);
+  idx = 0; flipped = false; known = new Set();
+  render();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === " ") { e.preventDefault(); flipCard(); }
+  if (e.key === "ArrowLeft") next();
+  if (e.key === "ArrowRight") prev();
+  if (e.key === "k" || e.key === "K") markKnown();
+});
+
+buildFilters();
+render();
+</script>
+</body>
+</html>
