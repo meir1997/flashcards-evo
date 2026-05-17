@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כרטיסיות למבחן 2 - פסיכולוגיה אבולוציונית (שיעורים 4-6)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  direction: rtl;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid #e94560;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header h1 {
+  font-size: 1.5em;
+  color: #e94560;
+  margin-bottom: 5px;
+}
+
+.app-header .subtitle {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.nav-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 10px;
+  background: #1a1a2e;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #333;
+}
+
+.nav-btn {
+  padding: 8px 18px;
+  border: 2px solid #333;
+  border-radius: 25px;
+  background: transparent;
+  color: #aaa;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover { border-color: #e94560; color: #e94560; }
+.nav-btn.active { background: #e94560; color: white; border-color: #e94560; }
+
+.controls-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px;
+  background: #141425;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #222;
+}
+
+.ctrl-btn {
+  padding: 6px 14px;
+  border: 1px solid #444;
+  border-radius: 15px;
+  background: #1e1e35;
+  color: #ccc;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ctrl-btn:hover { background: #2a2a45; border-color: #e94560; }
+.ctrl-btn.active-filter { background: #e94560; color: white; border-color: #e94560; }
+
+.progress-section {
+  text-align: center;
+  padding: 10px;
+  background: #141425;
+  font-size: 0.85em;
+  color: #888;
+}
+
+.progress-bar-container {
+  width: 80%;
+  max-width: 400px;
+  height: 6px;
+  background: #222;
+  border-radius: 3px;
+  margin: 8px auto 0;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e94560, #ff6b6b);
+  border-radius: 3px;
+  transition: width 0.5s;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 55vh;
+  padding: 20px;
+  perspective: 1200px;
+}
+
+.flashcard {
+  width: 100%;
+  max-width: 650px;
+  min-height: 320px;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flashcard.flipped { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  min-height: 320px;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.card-front {
+  background: linear-gradient(145deg, #1e1e35, #252545);
+  border: 2px solid #e94560;
+  box-shadow: 0 10px 40px rgba(233, 69, 96, 0.15);
+}
+
+.card-back {
+  background: linear-gradient(145deg, #1a2a1a, #1e351e);
+  border: 2px solid #4ecdc4;
+  transform: rotateY(180deg);
+  box-shadow: 0 10px 40px rgba(78, 205, 196, 0.15);
+}
+
+.card-label {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 0.7em;
+  color: #666;
+  background: rgba(0,0,0,0.3);
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+
+.card-number {
+  position: absolute;
+  top: 12px;
+  left: 15px;
+  font-size: 0.7em;
+  color: #666;
+  background: rgba(0,0,0,0.3);
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+
+.card-front .card-text {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.8;
+}
+
+.card-back .card-text {
+  font-size: 1.05em;
+  font-weight: 400;
+  color: #d0f0d0;
+  line-height: 1.9;
+}
+
+.card-back .card-text strong {
+  color: #4ecdc4;
+}
+
+.mark-btn {
+  position: absolute;
+  bottom: 12px;
+  left: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: all 0.2s;
+}
+
+.mark-btn:hover, .mark-btn.marked { opacity: 1; }
+
+.nav-arrows {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 15px;
+}
+
+.arrow-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #444;
+  background: #1e1e35;
+  color: #ccc;
+  font-size: 1.3em;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-btn:hover { border-color: #e94560; color: #e94560; background: #252545; }
+
+.keyboard-hints {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.75em;
+  color: #555;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 1.1em;
+}
+
+@media (max-width: 600px) {
+  .card-front .card-text { font-size: 1em; }
+  .card-back .card-text { font-size: 0.9em; }
+  .card-face { padding: 20px; min-height: 280px; }
+  .flashcard { min-height: 280px; }
+  .nav-btn { padding: 6px 12px; font-size: 0.8em; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>כרטיסיות למבחן 2</h1>
+  <div class="subtitle">פסיכולוגיה אבולוציונית | שיעורים 4-6 | ד"ר אבי בנוזיו</div>
+</div>
+
+<div class="nav-bar" id="navBar"></div>
+
+<div class="controls-bar">
+  <button class="ctrl-btn active-filter" data-filter="all" onclick="setFilter('all')">הכל</button>
+  <button class="ctrl-btn" data-filter="unseen" onclick="setFilter('unseen')">לא נצפו</button>
+  <button class="ctrl-btn" data-filter="marked" onclick="setFilter('marked')">מסומנים</button>
+  <span style="color:#444">|</span>
+  <button class="ctrl-btn" onclick="shuffleCards()">ערבב</button>
+  <button class="ctrl-btn" onclick="resetProgress()">אפס</button>
+</div>
+
+<div class="progress-section">
+  <span id="progressText">0 / 0</span>
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="card-container" id="cardContainer">
+  <div class="flashcard" id="flashcard" onclick="flipCard()">
+    <div class="card-face card-front">
+      <div class="card-label" id="cardLabel"></div>
+      <div class="card-number" id="cardNum"></div>
+      <div class="card-text" id="frontText"></div>
+      <button class="mark-btn" id="markBtnFront" onclick="event.stopPropagation();toggleMark()">&#9733;</button>
+    </div>
+    <div class="card-face card-back">
+      <div class="card-label" id="cardLabelBack"></div>
+      <div class="card-number" id="cardNumBack"></div>
+      <div class="card-text" id="backText"></div>
+      <button class="mark-btn" id="markBtnBack" onclick="event.stopPropagation();toggleMark()">&#9733;</button>
+    </div>
+  </div>
+</div>
+
+<div class="nav-arrows">
+  <button class="arrow-btn" onclick="prevCard()">&#8594;</button>
+  <button class="arrow-btn" onclick="flipCard()">&#8635;</button>
+  <button class="arrow-btn" onclick="nextCard()">&#8592;</button>
+</div>
+
+<div class="keyboard-hints">
+  חצים: ניווט &nbsp;|&nbsp; רווח: הפוך &nbsp;|&nbsp; M: סמן &nbsp;|&nbsp; לחיצה על כרטיסייה: הפוך
+</div>
+
+<div class="empty-state" id="emptyState" style="display:none">
+  אין כרטיסיות להצגה בפילטר הנוכחי
+</div>
+
+<script>
+const allCards = [
+
+// ===== שיעור 4: בעיות בזיווג (גברים) =====
+// --- מערכות יחסים קצרות/ארוכות טווח ---
+{lesson:4, q:"מהי 'בעיית המספר' (Adaptive Problem) מבחינת גברים?", a:"ההבחנה בין מערכות יחסים <strong>לטווח קצר</strong> לבין מערכות יחסים <strong>לטווח ארוך</strong>. בטווח ארוך ההבדל קטן, אבל בטווח קצר – ההבדל בין גברים לנשים גדול מאוד. גברים רוצים יותר מערכות יחסים קצרות טווח מאשר נשים."},
+{lesson:4, q:"מה מצא המחקר על סטודנטים בקמפוס לגבי ההבדל בין גברים לנשים במספר בני זוג רצוי?", a:"56% מהסטודנטים אמרו 'ראיתי אותך ברחבי הקמפוס, מה דעתך לצאת איתי לדייט?' – ולא אחד ענה 'מה דעתך לבוא אלי ללירה/למיטה' (0% נשים, 6% גברים). <strong>75%</strong> מהגברים הסכימו לבוא למיטה עם זרה לגמרי, לעומת <strong>0%</strong> מהנשים."},
+{lesson:4, q:"מהו ה-attraction-reduction effect?", a:"כאשר אנשים שמרבים באינטראקציות קצרות טווח, יש <strong>ירידה מאוד גדולה</strong> במשיכה לבת הזוג לאחר קיום יחסי מין. ה-bonding הוא מאוד חזק, מה שמאפשר את המעבר לבן זוג הבא. <strong>נמצא בעיקר אצל גברים</strong> קצרי טווח."},
+{lesson:4, q:"מה ההבדל בין גברים לנשים בשימוש באפליקציות (טינדר)?", a:"<strong>גברים</strong> – נפוץ יותר בקרב גברים מאשר נשים. גברים משתמשים בטינדר בעיקר למערכות יחסים קצרות טווח, בעוד נשים משתמשות יותר למערכות ארוכות טווח."},
+
+// --- EPM ורצון לגיוון ---
+{lesson:4, q:"מהו EPM ומה מטרתו?", a:"<strong>Extra-Pair Mating</strong> – מערכת יחסים מחוץ לזוגיות. המטרה: להגדיל את מספר הסטודנטים/בני זוג. גם בקרב גברים – להוריד את הסטנדרטים, כך גם בקרב גברים אין סטנדרטים, אך עובר מערכת יחסים לטווח קצר – הסטנדרטים יורדים."},
+{lesson:4, q:"מהי ההשקעה המינימלית בכל התחומים אצל גברים?", a:"<strong>ההשקעה היא מינימלית בכל התחומים</strong>. גם הזכר עדיין יכול להביא עוד צאצאים, הוא אינו מוגבל. בניגוד לנשים שמוגבלות ע\"י הריון, הנקה וגידול – גברים יכולים תיאורטית להפרות נשים רבות."},
+{lesson:4, q:"כמה מערכות יחסים קצרות טווח יש לגברים לעומת נשים במהלך החיים?", a:"גברים: עד <strong>5</strong> מערכות בחודש הקרוב, <strong>5</strong> בחודשים הקרובים, <strong>20</strong> במהלך השנה, <strong>20</strong> במהלך החיים. נשים: <strong>מתחילות מ-5 ויורדות ל-2</strong> במהלך החיים. פער גדול בהעדפה."},
+
+// --- רמזים להתנהגות ואטרקטיביות ---
+{lesson:4, q:"מהם רמזים התנהגותיים לגבי מערכות יחסים קצרות/ארוכות טווח?", a:"רוב הרמזים הם <strong>רמזים התנהגותיים</strong> – הקשר בין הרמזים ההתנהגותיים. יש כל מני תכונות שקושרות למתאם – חוגגת, פלירטטית, צעירה, סליפי... כל אלו הם רמז טוב ל<strong>מע' יחסים קצרת טווח</strong>. לעומת friendly – לא רלוונטי לבת הזוג."},
+{lesson:4, q:"מהם רמזים לגבי מידת הפוריות אצל נשים?", a:"רמזים <strong>עקיפים</strong>: שפתיים, עור, טונוס שרירים. רמזים הקשורים ל<strong>גיל</strong> ו<strong>בריאות</strong>. אצל שימפנזות – האישון מאדים והזכר הדומיננטי ינסה להרחיק גברים אחרים. אצל בני אדם הרמזים עקיפים וקשורים לגיל ובריאות."},
+{lesson:4, q:"מהו יחס מותן-אגן (WHR) ומה חשיבותו?", a:"מאפיין פיזיולוגי שנותן ידע לגבי <strong>פוריות</strong> וגם קשור לאטרקטיביות. WHR – <strong>יחס מותן/אגן</strong>. בלי קשר למשקל האישה, גברים מעדיפים יחס נמוך יותר. אישה בריאה: 0.75, גברים קרוב ל-1. יחס של <strong>0.7</strong> נמצא כאטרקטיבי ביותר, קשור לבריאות ופוריות."},
+{lesson:4, q:"מהן תכונות שנמצאות עם מתאם גבוה לאטרקטיביות?", a:"<strong>חלק, עיניים בלולות, מתח שרירים, סימטריה, קול (קול נשי יותר או גברי יותר) יחס אגן-מותן</strong>. גם שפתיים, עור, טונוס. תכונות אלו קשורות ל<strong>אסטרוגן</strong> ולפוריות פיזיולוגית."},
+
+// --- ודאות הורית וקנאה ---
+{lesson:4, q:"מהי 'הדילמה של אי ודאות הורית' אצל גברים?", a:"גברים אף פעם לא יכולים להיות <strong>בטוחים ב-100%</strong> שהצאצא הוא שלהם. זו דילמה כי מצד אחד רוצים להשקיע, מצד שני – ייתכן שמשקיעים בצאצא של גבר אחר. לכן התפתחו מנגנונים <strong>לזיהוי ולהגנה</strong> על ודאות הורית."},
+{lesson:4, q:"מה ההבדל בין קנאה אצל גברים לקנאה אצל נשים?", a:"<strong>קנאה לגבי בגידה מינית</strong> של בת הזוג חשובה יותר <strong>לגברים</strong>, בקרב גברים. <strong>בגידה רגשית</strong> חשובה יותר <strong>לנשים</strong>. גברים דואגים שהילד שלהם, נשים דואגות שהגבר ישקיע בהן ולא באחרת."},
+{lesson:4, q:"מה לגבי גברים ונשים שאינם במערכת יחסים מחייבת – מי חושש יותר מבגידה?", a:"<strong>גברים</strong> חוששים יותר מהכולם, גם גברים שמערכת יחסים מחייבת וגם שאינם. גברים שנמצאים במערכות יחסים <strong>מחוששים הרבה יותר מכולם</strong>. ודאות הורית תמיד קיימת, לאב לא תמיד ברור."},
+{lesson:4, q:"מהי נקודת צניעות ומה הקשר לודאות הורית?", a:"<strong>צניעות</strong> = ההיסטוריה המינית של בת הזוג הפוטנציאלית. חשוב לגברים לדעת – כי מספר בני זוג קודמים מעלה את <strong>הסיכון לאי-ודאות הורית</strong>. גברים מעדיפים נשים עם היסטוריה מינית מצומצמת יותר."},
+
+// --- נישואין ומוסד חברתי ---
+{lesson:4, q:"מהו נישואין מפרספקטיבה אבולוציונית?", a:"<strong>מוסד חברתי</strong> – מי יכול לבוא במגע עם מי. מנגנון חברתי כמו קנאה, מייצג כמוסד מהנישואים, מסייע מאוד בהברחת הרמז – <strong>האם מישהו חבר לנו או לא</strong>."},
+
+// --- טסטוסטרון ומאפיינים ---
+{lesson:4, q:"מה הקשר בין טסטוסטרון להתנהגות זיווג?", a:"<strong>טסטוסטרון</strong> מעורב בכל תהליך ההתחרות המינית. רמות גבוהות של טסטוסטרון גורמות להיות תחרותיים יותר עם בני מינם. גברים עם <strong>רמות גבוהות של טסטוסטרון</strong> – יותר חיפוש אחר בת זוג, רמות ירדו כשנמצאים בקשר מחייב."},
+{lesson:4, q:"מה הקשר בין טסטוסטרון למצב הזוגי?", a:"גברים רווקים – רמות <strong>גבוהות</strong> יותר. גברים בקשר מחייב – רמות <strong>ירדו</strong>. גברים שנמצאים בקשר והורים – רמות <strong>ירדו אפילו יותר</strong>. האנרגיה עוברת להשקעה בילדים ולא לחיפוש בת זוג."},
+{lesson:4, q:"מה הקשר בין טון דיבור לאטרקטיביות?", a:"גברים שנתפסים כ<strong>אטרקטיביים</strong> מאוד – טון הדיבור הוא <strong>גבוה יותר</strong>. כשחושבים שמתקשרים למישהי אטרקטיבית – טון נמוך יותר. קשור ל<strong>מבנה הגוף</strong>, שרירים, הבלטה למבנה הגוף."},
+{lesson:4, q:"מהו 'אפקט הליפסטיק' ומתי הוא מתרחש?", a:"<strong>בתקופות של קושי כלכלי</strong>, צפי לקושי כלכלי – יש עלייה בצריכה של <strong>מוצרי טיפוח לנשים</strong>. נשים משקיעות יותר במראה כשהמצב הכלכלי קשה, כי התחרות על בני זוג עם משאבים גדלה."},
+
+// --- מוצרי טיפוח ---
+{lesson:4, q:"מה ההבדל בין תגובת גברים לנשים למוצרי טיפוח ומחיר?", a:"כשמוצר הבקרה – <strong>קונים פחות כשיש צפי למצב כלכלי קשה</strong>. אצל <strong>גברים</strong>, במדינה ויש מצב כלכלי קשה – פשוט קונים פחות. אבל <strong>מוצרי טיפוח</strong> – קונים <strong>הרבה יותר</strong> (בכללי), אבל קונים הרבה יותר בתקופת קושי."},
+{lesson:4, q:"מה מחקר הפריטים (ג'ינס, תחנורה, בושם) הראה לגבי סיסמאות שיווק?", a:"הציגו מוצרי טיפוח עם <strong>סיסמאות שיווק שונות</strong>: 1) סיסמא הקשורה למטרה חברתית 'יראלף לורן'. 2) סיסמא הקשורה להשגת מטרה חברתית 'היי נחשקת'. כשנשאלו 'האם היית רוצה למצוא' – <strong>קנייה של מוצרי טיפוח עלתה</strong>."},
+
+// --- השקעה הורית מבחינת גברים ---
+{lesson:4, q:"מה הכוונה ב'השקעה הורית' מפרספקטיבת גברים?", a:"מתחיל בכבר ב<strong>ביולוגיה</strong> – בתאי רבייה של זכרים ונקבות. תאי רבייה של זכרים – <strong>קטנים, ניידים, בכמויות עצומות</strong> (אצל בני אדם 12 מיליון לשעה מיוצרים). תהליך ההפריה הוא פנימי – <strong>ההשקעה האנרגטית של הגוף</strong>, במשך כל תקופת ההיריון."},
+{lesson:4, q:"מה אומר המחקר מ-2010 על גברים והעדפות במערכת יחסים קצרת טווח?", a:"הציגו לגברים שתי אפשרויות: פנים או גוף. כשמדברים על מע\"י קצרת טווח – מה נרצה לראות? <strong>קודם את הפנים או הגוף?</strong> בקטע הקודם דיברנו על מע\"י קצרות טווח, את היתרון הגדול הוא הבאת צאצאים. לעומת גברים – <strong>מבנה הגוף</strong> זה חשוב יותר לגברים שמחפשים מע\"י קצרת טווח במיוחד."},
+
+// --- גברים מעוניינים במע"י ארוכות טווח ---
+{lesson:4, q:"מהם היתרונות של גברים במערכת יחסים ארוכת טווח?", a:"<strong>בלי התחייבות לא נשיג בת זוג</strong>. העלאת הסיכוי שהילדים ישרדו. <strong>העלאת סיכוי לוודאות הורית</strong>. <strong>מעמד/סטטוס גבוה יותר דרך נישואים</strong>. הרחבת רשת תמיכה. <strong>פחות צאצאים</strong> אבל יותר השקעה בכל אחד."},
+{lesson:4, q:"מדוע בלי התחייבות ייתכן שגבר לא ישיג בת זוג בכלל?", a:"כי הנקבות/נשים שמשקיעות יותר בצאצאים – <strong>הן הבוררות</strong> יותר. אז אולי לא נשיג בת זוג בכלל אם לא נבטא התחייבויות באופן רציני. <strong>מעלה את הפוטנציאל</strong> למציאת בת זוג עם ערך זיווגי גבוה."},
+
+// --- שפתיים ומאפייני אסטרוגן ---
+{lesson:4, q:"מהו הקשר בין שפתיים לאסטרוגן ולפוריות?", a:"שפתיים מלאות קשורות ל<strong>אסטרוגן</strong>, וקצת לפני הביוץ מונפרש אסטרוגן, והוא גורם להפרשה של חומר מסוים בזמן באזור הרחם שמסייע לתאי הרץ שליבור. לכן – <strong>שפתיים מלאות = רמז עקיף לפוריות</strong>."},
+
+// ===== שיעור 5: המשך בעיות בזיווג / נשים =====
+// --- עלויות מע"י קצרת טווח לנשים ---
+{lesson:5, q:"מהם החסרונות של מערכת יחסים קצרת טווח מבחינת נשים?", a:"1. <strong>הסיכוי להידבק במחלות</strong> – עולה. 2. <strong>סיכון שלא נמצא אצל גברים</strong> – להיפגע פיזית (כ-15% מדווחות על תקיפה מינית). 3. <strong>חסרון שנמצא יותר אצל נשים</strong> – כשאישה עוברת תקיפה, זה נתפס כחמור יותר (כ-7% גברים)."},
+{lesson:5, q:"מדוע פגיעה במוניטין חמורה יותר לנשים?", a:"אם זה גם לגברים, אצל נשים יש כמה שכבות למוניטין רע: 1. <strong>ודאות הורית</strong> – היא גם לגברים. 2. <strong>מחשבה לא מודעת</strong> – גברים בטווח קצר מעדיפים <strong>מערכת אי ודאות הורית</strong>. אצל נשים (בקרב בני אדם) הן האורגניזם הזול, ולכן <strong>האישה אמורה להיות המין הבורר</strong> יותר."},
+
+// --- יתרונות מע"י קצרת טווח לנשים ---
+{lesson:5, q:"מהי השערת הפקת משאבים (Resource Extraction) בקרב נשים?", a:"היתרון הראשון קשור ל<strong>השגה מיידית של משאבים</strong>. Burley & Symanski (1981): תלות של נשים בגברים על זנות. כשיש צורך בסיסי כלכלי – <strong>יחסי מין בתמורה לאיזו תמורה כלכלית</strong>. בהקשרים מסוימים כשבאמת יש צורך כלכלי – זה יתרון."},
+{lesson:5, q:"מהי השערת הגנים הטובים (Genetic Benefits)?", a:"<strong>רוח גנטי</strong> – יתרון מחוץ לנישואים כאשר בן הזוג הנוכחי הוא לא פורה. גם ניפוס של גנים טובים – <strong>יותר משל בן הזוג</strong> הנוכחי. Kirkpatrick: אם התהליך מתרחש לאורך דורות – חלק מהתכונות של הילדים אטרקטיביים. <strong>השערה שעדיין פתוחה</strong>."},
+{lesson:5, q:"מהי אסטרטגיית Short-term for long term?", a:"המוטיבציה לכניסה למע\"י קצרת טווח – המטרה היא לסנן 'להאריך' את בן הזוג <strong>כדי לעבור למע\"י ארוכת טווח</strong>. להעריך את התאימות המינית. כשנשים לגבי מע\"י קצרת טווח – הסיבה הראשונה היא בד\"כ משיכה מינית, <strong>אבל הסיבה השנייה בחשיבות היא בחינת הזוג</strong>."},
+{lesson:5, q:"מהי השערת החלפת בן הזוג (Mate Switching)?", a:"מע\"י קצרת טווח יכולות להיות <strong>שוקלים להחליף בן זוג</strong>. ניחנו ואנחנו נמצאים במע\"י לא טובה, מה אפשר לעשות? 'הפוטזת החלפת בן הזוג'. בעזיבה – אופציה אחרת שמועלת כאן היא <strong>אסטרטגיות שונות לעזיבה</strong>."},
+{lesson:5, q:"מהי השערת ה-Mate Manipulation?", a:"יתרון נוסף שקשור ליחסים בין בני הזוג – <strong>איזו השפעה</strong>, בקיומו של רומן מחוץ לנישואים/למע\"י הרציניית – איזו השפעה יש לה על בן הזוג הנוכחי? <strong>לנקום</strong> על בגידה רגשית, כי התמחויות והאנרגיה שהגבר ישקיע – <strong>יכולים לעבור לאישה אחרת</strong>."},
+{lesson:5, q:"מהי השערת העלייה בסטטוס כיתרון של מע\"י קצרת טווח?", a:"מתוך מע\"י קצרות טווח שהוא במעמד גבוה משלי – <strong>פתאום יכולה להיפתח לאישה גישה למעלה חברתית</strong> אחר, שהיה חסום לפני כן. זה גם נכון לגבי נערים ונערות – <strong>בתקופת גיל ההתבגרות</strong>, אחד השיקולים הוא להתחבר עם מישהו מה'מקובלים'."},
+
+// --- מה נשים מחפשות במע"י ארוכת טווח ---
+{lesson:5, q:"מה נשים מחפשות בבן זוג למערכת יחסים ארוכת טווח?", a:"בן זוג ש<strong>יכול להשקיע</strong>, <strong>מוכן להשקיע</strong>, מוכן להגן על משפחתו, בן זוג עם <strong>כישורי הורות טובים</strong>, טובים פלוס, ובן זוג <strong>בריא</strong>. כל אלו רמזים שנשים משתמשות כדי להעריך."},
+{lesson:5, q:"לגבי מי יכול להשקיע – מה הרמזים?", a:"מצב כלכלי, <strong>סטטוס</strong>, גיל, גודל... אז לגבי מי <strong>מוכן</strong> להשקיע – עד כמה ניתן לסמוך על בן הזוג, עד כמה הוא יציב. תמלוכה מבוא הזוג באופן שוטף, <strong>הצהרות למחויבויות, דיבור על משפחה, הבאת ילדים</strong>."},
+{lesson:5, q:"מהם רמזים של גודל, חוזק, אתלטיות במערכת יחסים?", a:"רמזים של <strong>גודל, חוזק, אתלטיות</strong> – משמעותן היא <strong>הגנה</strong>. זה טוב גם לטווח קצר וגם טווח ארוך. קישור קיים בין מידת החשש של נשים מפשיעה והעדפות שלהן בבני זוג – <strong>נשים שמרגישות פחות בטוחות מעדיפות גברים גדולים יותר</strong>."},
+
+// --- מצב סוציו-אקונומי ונשים ---
+{lesson:5, q:"מהו הגיל ומה הקשר למעמד כלכלי של בן הזוג?", a:"<strong>רמז נוסף הוא הגיל</strong>. בד\"כ ההעדפה של נשים בשלל תרבויות היא <strong>לבן זוג מעט יותר מבוגר</strong> מהן, בממוצע 3-4 שנים. כשההשערה היא שלבן הזוג המבוגר <strong>יש יותר משאבים ויותר ניסיון</strong> לאגור משאבים."},
+{lesson:5, q:"האם ההעדפה של נשים לגברים עם משאבים היא אוניברסלית?", a:"<strong>כן</strong>. בשאלון אמריקאי ראינו דוגמא נוספת לחשיבות של ההכנסה על פני תרבויות שונות. אפשר להשתמש במידע היסטורי – <strong>נשען על מידע בבילעד שבם הנשיירה הפולטרינית שומרת נישוד</strong>. מהמאה ה-17 לגבי לידות, מוות, נישואין."},
+{lesson:5, q:"מה המחקר מצא לגבי נשים במעמד גבוה ונמוך והעדפות?", a:"נשים <strong>במעמד גבוה</strong> – סיכויי השרידות של הילדים גבוה יותר מ-0.6. <strong>במעמד הנמוך</strong> לעומת 0.49 – זה נראה פער לא כזה גדול אבל די משמעותי. גם מספר הנכדים – <strong>16 נכדים לנשים</strong> מוקצות תמיכה (ממעמד סוציו גבוה) לעומת מצומצם יותר, 6, לנשים ממעמד נמוך."},
+
+// --- רמזים פיזיים ובריאות ---
+{lesson:5, q:"מדוע סימטריה חשובה באטרקטיביות?", a:"סימטריה היא רמז ל<strong>יציבות התפתחותית</strong>. אורגניזם סימטרי = סביר שהתפתח <strong>ללא הפרעות</strong> משמעותיות (מחלות, פרזיטים, חסרים תזונתיים). לכן – סימטריה = <strong>גנים טובים ובריאות</strong>. תופעה אוניברסלית בכל התרבויות."},
+{lesson:5, q:"מהו הקשר בין תקופת הביוץ להעדפות נשים?", a:"במחקר מ-2008 ומחקרי המשך – המצאים שבהם <strong>בתקופת הפוריות</strong> של נשים, בזמן הביוץ, השתנאים להן 'אילו תכונות חשובות' – אטרקטיביות, חזקות, סימטריים, <strong>דומיננטיות, גובה</strong>. אלו התכונות שחשובות לנשים יותר <strong>בתקופת הביוץ</strong>, הפוריות."},
+
+// --- 3 תנאים לעזיבת מע"י / Mate Switching ---
+{lesson:5, q:"מהם 3 הקשרים שמתניעים תהליך של עזיבת מערכת יחסים?", a:"1. <strong>ירידה בערך הזיווגי, באטרקטיביות של בן הזוג</strong> – כמו סטטוס חדש, כישורים חדשים. 2. <strong>עליית ערך הזיווגי של בת הזוג</strong> עצמה. 3. <strong>קיומן של אפשרויות חדשות</strong> שלא היו כשנכנסנו למע\"י הזו מלכתחילה."},
+{lesson:5, q:"מתוך ניטור של ערך הזיווגי – מה קורה לאחר גירושין?", a:"<strong>יכולת להעריך את ערך הזיווגי של בן הזוג</strong> – ככל שזה יורד, ההסתברויות לרומן מחוץ לנישואים עולה. מתוך הניטור של הערך הזיווגי ושל בן הזוג – <strong>ייתכן שינוי בפער</strong> הזיווגי של השניים, וככל שהפער הזה גדול יותר ונתפס כקבוע – <strong>חוסר השביעות ממע\"י עולה</strong>."},
+
+// --- הבדלי מינים בבגידה ---
+{lesson:5, q:"מהו ההבדל המרכזי בין גברים לנשים בסיבות לבגידה?", a:"גברים: בעיקר <strong>מיניות</strong> – חיפוש גיוון מיני. נשים: בעיקר <strong>רגשית</strong> – חוסר סיפוק רגשי מהמערכת הנוכחית. כשאישה בוגדת – לעיתים קרובות זה <strong>סימן שהמערכת בבעיה</strong>, לעומת גברים שיכולים לבגוד גם כשמרוצים."},
+{lesson:5, q:"מה ההבדלים בין גברים לנשים לגבי עלויות עזיבה?", a:"<strong>העלויות הן לא רק לאישה שיוצאת ממע\"י אלא גם לילדים</strong>. הילדים הופכים לילדים חורגים (תלוי בגיל), מאבדים תמיכה, אפשרויות לניצול. לפחות מבחינת נשים, לעומת גברים – <strong>יש הרבה נזקים במקרה של עזיבה</strong>."},
+
+// --- Women's Short-term Mating Summary ---
+{lesson:5, q:"מהם חסרונות ויתרונות של מע\"י קצרת טווח לנשים?", a:"<strong>חסרונות</strong>: סיכון למחלות, סיכון לאלימות פיזית, תוצאות חמורות ממוניטין רע. <strong>יתרונות (השערות)</strong>: 1. הפקת משאבים (נתמך), 2. רווחים גנטיים (~פתוח), 3. Short-term for long-term (~פתוח), 4. Mate Manipulation (~פתוח), 5. <strong>Mate Switching</strong> (מבטיח)."},
+
+// --- השקעה ורמזים ---
+{lesson:5, q:"מהי חשיבות ההשקעה מצד בת הזוג מבחינת נשים?", a:"<strong>השגה של השקעה</strong> עקבית ויציבה מצד בן הזוג – יתרון חומרי לטווח ארוך (גם נקבת שימפנזים, בונובוס וכו'). <strong>הגנה, טריטוריה</strong>. <strong>הרחבת תמיכה דרך סטטוס</strong> – אם מע\"י היא עם בן ממעמד גבוה. מידת <strong>הפוריות של האישה לא משתנה</strong> בין אם נכנסת למע\"י קצרת טווח או ארוכת טווח."},
+{lesson:5, q:"מהם הרמזים שנשים משתמשות כדי להעריך 'מי מוכן להשקיע'?", a:"<strong>אינטראקציות חיוביות עם ילדים</strong> – יגרמו להעריך את בן הזוג הפוטנציאלי כאחד שאפשר לסמוך עליו בקשר ארוך טווח. בן זוג עם <strong>כישורי הורות</strong> – זה גם רמז למישהו שמוכן להשקיע."},
+
+// ===== שיעור 6: הורות =====
+// --- עקרונות בסיסיים ---
+{lesson:6, q:"מהי המשוואה הבסיסית של הורות מפרספקטיבה אבולוציונית?", a:"<strong>מי ששרד ומצא זיווג = הורות</strong>. כלומר כל ההשקעה בלשרוד ואז למצוא בן/בת זוג – <strong>הכל לשם הצאצאים</strong>. הורות טומנת בחובה אתגרים חדשים שצריכים להתמודד איתם."},
+{lesson:6, q:"מהם האתגרים העיקריים של הורות מבחינה אבולוציונית?", a:"בעיקר <strong>אתגרים שקשורים לטיפול בצאצאים</strong>. הורות, מצד אחד זה הנושא המרכזי שנדבר עליו היום. אינטרהגנטיים במערכת היחסים בין הורים וילדים – <strong>בפעם הראשונה נדבר על משפחה מורחבת ואנשים נוספים</strong> שלא בהכרח קשורים אלינו גנטית."},
+{lesson:6, q:"מהו ההבדל בין r-selection ל-K-selection?", a:"<strong>r-selection</strong>: מביאים בכל מחזור המון צאצאים, זולים במובן שהסביבה לא יציבה. סיכויי ההישרדות הם נמוכים בסביבה לא יציבה <strong>לכן לא ישרדו</strong>. <strong>K-selection</strong>: מעט מאוד צאצאים אבל הם יקרים, מושקע בהם הרבה, <strong>הם חיים בסביבות יחסית יציבות</strong>."},
+{lesson:6, q:"תן דוגמאות למינים של r-selection ו-K-selection", a:"<strong>r-selection</strong>: סוסי ים, דגים, מקרסמנים קטנים, מכרסמנים – מביאים בכל מחזור המון צאצאים. <strong>K-selection</strong>: בני אדם, פילים, קופים – <strong>מעט צאצאים, השקעה גבוהה</strong>. גם צפרדעים – עד 500 מיליון ביצים מופרים בשנה."},
+{lesson:6, q:"מדוע שואלים 'Why bother? Why mother?'", a:"<strong>Why bother?</strong> – לשם כך טרחנו, כל המטרה, הפונקציה האולטימטיבית של שרידות וזיווג – <strong>היא הבאת צאצאים, העשת הגנטי</strong>. <strong>Why mother?</strong> – ככל האצבע הכי טוב שיש לנו – תלוי מי המין שמשקיע יותר בילד מלכתחילה מבחינת ההתעברות, לידה וכו'!"},
+
+// --- השקעה הורית ---
+{lesson:6, q:"מהי ההשקעה בצאצאים ומדוע היא לא דבר שמובן מאליו?", a:"<strong>ההשקעה בצאצאים היא לא דבר שמובן מאליו</strong>. ממאות/מיליוני צאצאים, לא ברור איך אפשר להשקיע בכלל. בקרב <strong>יונקים – 95%</strong> ההשקעה היא אצל האם. בקרב בני אדם, מכרסמנים גדולים – גם הזכר משקיע, <strong>אבל לא כמו האם</strong>."},
+{lesson:6, q:"מה אחוז ההשקעה ההורית אצל מינים שונים?", a:"או הנקבה, אם מסתכלים על <strong>עופות</strong>: אצל עופות – 10% האם היא המשקיעה, והשאר – אחוז מאוד מאוד גדול – <strong>ההשקעה היא אצל האבות</strong> משקיעים – זאבים, שועלים, קופים. בקרב <strong>יונקים</strong> – 95% ההשקעה היא של האם. בקרב <strong>בני אדם</strong> – שני ההורים."},
+
+// --- ודאות הורית ורמזים ---
+{lesson:6, q:"מהם 3 הקשרים שבהם אנחנו אמורים לראות מנגנונים להשקעה הורית?", a:"1. <strong>קירבה גנטית לצאצאים</strong> – אילו יכולות/אינטואיציות/שיטות שעוזרות לי להבין האם הצאצא הוא שלי? 2. <strong>בתנוחה ונקודה ראשונה קיימת</strong> – האם ההשקעה שלי תשתלם בעתיד? 3. <strong>הילד שלי</strong>, ישתלם לי להשקיע בו את הזמן שיכול לשתלם יותר."},
+{lesson:6, q:"מהי הדילמה של אי ודאות הורית?", a:"<strong>הדילמה</strong>: האם בעד שהנקבות בטוחות ב-100% שהצאצא שלהן, קרוב יונקים – הן ילדו אותו אז ברור שהוא שלהן. אצל הזכרים – <strong>לא שום זכר בשום מין לא ירצה לצור</strong>, לכן להילחם עבור ילד של מישהו אחר."},
+
+// --- מנגנוני ודאות הורית ---
+{lesson:6, q:"מהם מנגנוני ודאות הורית שהתפתחו?", a:"1. <strong>שמירה על בת הזוג</strong> – Mate guarding. 2. <strong>זיהוי דמיון</strong> – האם התינוק דומה לי? 3. <strong>קנאה מינית</strong> – מנגנון רגשי שמניע שמירה. גם <strong>קבוצות שימפנזים</strong> – כשנקבות פוריות, הזכר האלפא ישמור עליהן ויכנס להריק."},
+{lesson:6, q:"מה מצאו מחקרים לגבי דמיון פיזי וזיהוי צאצאים?", a:"מאמר מציע שממצאים נעשה בפינלנד – <strong>שדמיון פיזי מנבא השקעה הורית</strong>. מאמר שני: <strong>שופטים חיצוניים</strong> שהסתכלו על תמונות – הסתכלו על מידת ההשקעה, והרואו שככל ששופטים חושבים שהילד יותר דומה לאבא – <strong>כך האבא משקיע יותר</strong> בגידול הילד."},
+{lesson:6, q:"מה נמצא במחקר של 2002 לגבי דמיון בין תינוקות להורים?", a:"לקחו נבדקים, צילמו אותם וצילמו את הילד. ללא ידיעת החוקרים יצרו תמונה מעורבת – <strong>50% האם, ו-50% הילד</strong>. אותו דבר עשו גם לאם. נבדקים ראו סדרות כאלו של 5 פרצופים – <strong>90%</strong> בחרו בילד שלהם, ו-<strong>25%</strong> מהאימהות בחרו בילד שדומה להן."},
+
+// --- Daly & Wilson ורצח תינוקות ---
+{lesson:6, q:"מהו Infanticide ומה Daly & Wilson מצאו?", a:"<strong>Infanticide</strong> = הרג של תינוקות. Daly & Wilson הציגו ממצאים קדומים: מספר הקורבנות למיליון ילדים – <strong>ברור</strong>. מספר הקורבנות למיליון ילדים – <strong>בגילאים 5-3 מדובר על 100 מקרי הרג</strong> ואז זה יורד. <strong>בגילאים 2-0.5 – בערך 600 מקרי הרג למיליון ילדים</strong>."},
+{lesson:6, q:"מהו 'אפקט הסינדרלה' (Cinderella Effect)?", a:"<strong>הקשר הגנטי בין הפוגע להורה הוא המנבא הכי חזק</strong> שיש להתעללות בילדים. ילדים חורגים – <strong>במממוצע הסיכוי שלהם לחוות התעללות הוא בערך פי 40</strong> מאשר ילדים ביולוגיים. כאשר ילדים הם ילדים ביולוגיים – <strong>חצי מקרה ל-1000</strong>, ולא משנה כל כך הגיל."},
+{lesson:6, q:"מה הקשר בין גיל הילד להתעללות והשקעה הורית?", a:"ככל שהילד <strong>צעיר יותר</strong>, הסיכוי להירצח על ידי קרובים – <strong>גבוה יותר</strong>, כי הוא 'זול' יותר מבחינה אבולוציונית (ההשקעה בו עד כה קטנה). בגיל 6 – 5 מקרי הרג למיליון, לעומת בגיל 16 – <strong>מקרה אחד למיליון</strong>. הקירבה לפוריות עולה, <strong>הסיכון להירצח על ידי קרובים – יורדת</strong>."},
+{lesson:6, q:"האם ילד קטן יותר באמת חסר יכולת התנגדות, או שזו תופעה אבולוציונית?", a:"מחשבה שאולי ילדים קטנים יותר הם חסרי יכולת להתנגד – <strong>אבל במחקר אחר מראה שמה ילדים נהרגים על ידי זרים – שם רוב הנרצחים דווקא נפגעים על ידי זרים בגיל ההתבגרויות</strong>. רף שמראה כמה ילדים נהרגים – <strong>רוב הנרצחים דווקא</strong> בגיל בוגר יותר."},
+
+// --- הבדלים הוריים בין זכרים לנקבות ---
+{lesson:6, q:"מהם ההבדלים בין אבות לאימהות לגבי ודאות הורית?", a:"האימהות <strong>תמיד בטוחות שהצאצא שלהן</strong>. האבות – <strong>לעולם אינם בטוחים ב-100%</strong>. לכן, אבות שלא בטוחים אם הילד שלהם – <strong>משקיעים פחות</strong> מאשר אבות שבטוחים. כשהילד הוא לא של האב, זה ידוע – <strong>מה קורה אז? פגיעה בילדים שאינם על זכר האלפא</strong>."},
+{lesson:6, q:"מה מצאו לגבי ההשקעה של אימהות עם דיכאון?", a:"רואים שאימהות שאינן מדווחות על סימפטומים של דיכאון, <strong>האימהות היו להן או תינוקות בנים</strong> – שונלדו עם מחלות, האימהות יזהו בסביבות גבוהות יותר את <strong>הממחטה של התינוק</strong> שלהן. אימהות <strong>בריאות</strong>, על כוח, <strong>משקיעות יותר</strong> בילד החלש שזקוק לעזרה."},
+
+// --- השקעה של סבים וסבתות ---
+{lesson:6, q:"מדוע סבתא מצד האם משקיעה הכי הרבה מכל הסבים?", a:"<strong>סבתא מצד האם – בטוחה שהיא חברת שלה</strong>, והנכד הוא הבן של האם, אין לה ספק שהנכד קשור אליה. כשעוברים לצד של האבא – <strong>הסבא מצד האבא</strong>, קודם כל, לא בטוח במאה אחוז שהאבא הוא הצאצא שלו. <strong>סבתא מצד האם > סבתא מצד האב > סבא מצד האם > סבא מצד האב</strong>."},
+{lesson:6, q:"מה מצא מחקר DeKay (1995) לגבי השקעת סבים וסבתות?", a:"מצאו ש<strong>העמודה הירוקה</strong> (סבתא מצד האם) היא הגבוהה ביותר ב-4 מדדים: <strong>קרבה (closeness), זמן (time), ידע (knowledge), ומשאבים (resources)</strong>. סבתא מצד האם = הכי הרבה תשומת לב, ידע, קירבה וכו' עם הנכדים."},
+
+// --- Fitness threat ו-Tend and befriend ---
+{lesson:6, q:"מהו Fitness Threat ומהו Attachment Promotion?", a:"שני שמות שונים אבל אותו רעיון: <strong>שניהם טובות/רגישות יותר צורך קידום ההתקשרות</strong> והסתגלות עם התינוקת, יזהו רגשות בצורה טובה יותר <strong>כדי שהאינטראקציה תהיה טובה</strong> – ההנחה היא שתי היפותזות: 1) <strong>הבדלים קשובים</strong>. 2) <strong>Tend and befriend</strong>."},
+{lesson:6, q:"מהו דפוס ה-Tend and Befriend?", a:"דפוס התנהגות שמאפיין נקבות בד\"כ, גם נשים בתגובה ל-<strong>Fitness threat</strong>: ה-<strong>Tending</strong> קשור להרגיע את הצאצאים כדי להימנע מזיהוי על ידי טורפים. ה-<strong>Befriending</strong> – ליצור רשת חברתית את תמיכה חברתית, <strong>אפילו להתחבר עם אחרים, במיוחד בזמן של לחץ</strong>."},
+{lesson:6, q:"מהו ה-Baby Effect?", a:"<strong>נשים טובות יותר בזיהוי הזה</strong>, להתחבר עם אחרים, במיוחד בזמן של לחץ או מצוקה. <strong>Baby Effect</strong> – נשים נמצאות לקחת סיכונים כאשר הן עם התינוק <strong>במעבדה</strong>, לעומת כשהן לבד – <strong>במעבדה, במחקרי מעבדה</strong>."},
+
+// --- קונפליקט הורים-ילדים ---
+{lesson:6, q:"מהו קונפליקט הורים-ילדים (Parent-Offspring Conflict) של Trivers?", a:"<strong>Trivers</strong> שדיבר על אלטרואיזם הדדי/אלטרואיזם מותנה – המתח בין הורים לילדים. <strong>כל ילד ירצה הכל לעצמו</strong> (את המקסימום), אבל האם רוצה <strong>לתת שווה בשווה לכל הילדים</strong>. מהפרספקטיבה של כל אחד מהילדים – כל ילד ירצה הכל."},
+{lesson:6, q:"מהו Siblicide ומתי הוא מתרחש?", a:"<strong>Siblicide</strong> = התופעה של רצח בין אחים, ובמיוחד במצבים שבהם <strong>אין מספיק אוכל לכולם</strong>. רואים את זה הרבה אצל עופות, עופות דורסים, נשרים וכו'. כבר בקן, האח הראשון עייף את השני מהקן במצבים שאין מזון בשפע."},
+{lesson:6, q:"מהו עימות הנקה והפסקת הנקה אצל יונקים?", a:"האינטרס של האם הוא להפסיק <strong>רק מתוך תצפיות</strong> – הנושא של הנקה והפסקת הנקה אצל יונקים. האינטרס של האם הוא להפסיק – <strong>את ההנקה, לגמול את הילד מוקדם</strong> לפני שהילד רוצה להפסיק. כלומר האם יש לה עוד דבר או שניים לעשות, לכן נראה אצל הרבה יונקים <strong>ניסיונות של הילד להמשיך לינוק</strong>."},
+
+// --- פרמטרים של ההשקעה ---
+{lesson:6, q:"מהם 2 הפרמטרים שDaly & Wilson העלו לגבי התעללות?", a:"1. <strong>גיל הילד</strong> – הגיל של הילד הוא חשוב. 2. <strong>הבריאות של הילד</strong> – ברגפים ראינו שבסיקר הילדים שמפגינים או סופגים רצח בשיעור הכי גבוה – <strong>הם הילדים הקטנים</strong>. ערך הכשירות של אינדיבידואל – <strong>עולה ככל שהם מגיעים לבגרות מינית</strong>."},
+{lesson:6, q:"מדוע ילד בן 10 'שווה' יותר מבחינה אבולוציונית מתינוק?", a:"ילד/ה בן 10 – <strong>הסיכויים שיהיו פוריים גבוהים יותר</strong> מאשר ילד בן 3. במילים אחרות, ילד/ה בגיל 10 – <strong>הסיכויות שהם יהיו פוריים גבוהים יותר</strong>. השקענו בהם הרבה, הם אוטוטו מסוגלים טכנית להביא ילדים – <strong>לכן יש ערך יותר גבוה לשמור עליהם</strong>."},
+{lesson:6, q:"מה הקשר בין מצב כלכלי של האם להשקעה בילדים?", a:"נשים נשואות מול לא נשואות – מגדלות את הילד לבד או לא. הנושא הוא פחות אם יש בן זוג או לא אלא אם יש <strong>תמיכה או לא</strong>. אימא צעירה עם ילד, <strong>בלי תמיכה חברתית</strong>, – <strong>הסיכוי להרג תינוקות למיליון עומד על כ-130</strong> – גבוה פי 2 מאימהות צעירות שכן נשואות."},
+
+// --- ניטור מערכת יחסים ---
+{lesson:6, q:"מהו ניטור מערכת יחסים ומדוע הוא חשוב?", a:"דבר ראשון קשור לניטור עצמי – <strong>ככל שתפיסת ערכי העצמי שלי עולה, כך אנו חושבים על יותר שותפים פוטנציאליים</strong>. בממוצע, גם גברים וגם נשים – יש להם בממוצע <strong>3 בני זוג חלופיים</strong>. <strong>יכולת להעריך את ערך הזיווגי של בן הזוג</strong> – ככל שזה יורד, ההסתברות לרומן חוץ-זוגי עולה."},
+
+// --- הורות וזמן ---
+{lesson:6, q:"מדוע האבות פחות משקיעים כשלא בטוחים שהילד שלהם?", a:"כי מבחינה אבולוציונית, <strong>להשקיע בילד שאינו שלך = בזבוז משאבים</strong>. המנגנון: אבות שבטוחים – משקיעים יותר. אבות שלא בטוחים – <strong>פחות דמיון התנהגותי בין האבות לילדים</strong> = פחות השקעה. כך הילד כדומות לו – <strong>כך הוא ישקיע יותר בגידול הילד</strong>."},
+{lesson:6, q:"מה קורה כשאבות מתגרשים ומקימים משפחה חדשה?", a:"יש לזכור שיש לא מעט <strong>השלכות לפירוק מערכת היחסים</strong> הנוכחית, בעיקר בנושא של <strong>מוניטין</strong>. למשל בקניית אישה גרושה, עצם הסטטוס של גרושה, המוהר שתשלם משפחת החתן הבא הוא נמוך יותר – <strong>הערך הזיווגי של האישה ירד</strong>."}
+];
+
+// State
+let currentLesson = 'all';
+let currentFilter = 'all';
+let filteredCards = [];
+let currentIndex = 0;
+let isFlipped = false;
+let seenCards = new Set();
+let markedCards = new Set();
+
+// Init
+function init() {
+  buildNav();
+  filterCards();
+  renderCard();
+}
+
+function buildNav() {
+  const nav = document.getElementById('navBar');
+  const lessons = [
+    {id:'all', label:'כל השיעורים'},
+    {id:4, label:'שיעור 4 – זיווג (גברים)'},
+    {id:5, label:'שיעור 5 – זיווג (נשים)'},
+    {id:6, label:'שיעור 6 – הורות'}
+  ];
+  nav.innerHTML = lessons.map(l =>
+    `<button class="nav-btn ${currentLesson == l.id ? 'active' : ''}" onclick="setLesson('${l.id}')">${l.label}</button>`
+  ).join('');
+}
+
+function setLesson(lesson) {
+  currentLesson = lesson === 'all' ? 'all' : parseInt(lesson);
+  currentIndex = 0;
+  isFlipped = false;
+  buildNav();
+  filterCards();
+  renderCard();
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  currentIndex = 0;
+  isFlipped = false;
+  document.querySelectorAll('.ctrl-btn[data-filter]').forEach(b => {
+    b.classList.toggle('active-filter', b.dataset.filter === f);
+  });
+  filterCards();
+  renderCard();
+}
+
+function filterCards() {
+  let cards = currentLesson === 'all' ? [...allCards] : allCards.filter(c => c.lesson === currentLesson);
+  if (currentFilter === 'unseen') cards = cards.filter((c, i) => !seenCards.has(allCards.indexOf(c)));
+  if (currentFilter === 'marked') cards = cards.filter((c, i) => markedCards.has(allCards.indexOf(c)));
+  filteredCards = cards;
+}
+
+function renderCard() {
+  const container = document.getElementById('cardContainer');
+  const empty = document.getElementById('emptyState');
+
+  if (filteredCards.length === 0) {
+    container.style.display = 'none';
+    empty.style.display = 'block';
+    updateProgress();
+    return;
+  }
+  container.style.display = 'flex';
+  empty.style.display = 'none';
+
+  const card = filteredCards[currentIndex];
+  const globalIdx = allCards.indexOf(card);
+  const lessonNames = {4:'זיווג (גברים)', 5:'זיווג (נשים)', 6:'הורות'};
+
+  document.getElementById('frontText').innerHTML = card.q;
+  document.getElementById('backText').innerHTML = card.a;
+  document.getElementById('cardLabel').textContent = `שיעור ${card.lesson} – ${lessonNames[card.lesson]}`;
+  document.getElementById('cardLabelBack').textContent = `שיעור ${card.lesson} – ${lessonNames[card.lesson]}`;
+  document.getElementById('cardNum').textContent = `${currentIndex + 1} / ${filteredCards.length}`;
+  document.getElementById('cardNumBack').textContent = `${currentIndex + 1} / ${filteredCards.length}`;
+
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+  isFlipped = false;
+
+  // Mark as seen
+  seenCards.add(globalIdx);
+
+  // Update mark buttons
+  const isMarked = markedCards.has(globalIdx);
+  document.getElementById('markBtnFront').classList.toggle('marked', isMarked);
+  document.getElementById('markBtnBack').classList.toggle('marked', isMarked);
+  document.getElementById('markBtnFront').style.color = isMarked ? '#ffd700' : '#666';
+  document.getElementById('markBtnBack').style.color = isMarked ? '#ffd700' : '#666';
+
+  updateProgress();
+}
+
+function flipCard() {
+  if (filteredCards.length === 0) return;
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  if (filteredCards.length === 0) return;
+  currentIndex = (currentIndex + 1) % filteredCards.length;
+  renderCard();
+}
+
+function prevCard() {
+  if (filteredCards.length === 0) return;
+  currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+  renderCard();
+}
+
+function toggleMark() {
+  if (filteredCards.length === 0) return;
+  const globalIdx = allCards.indexOf(filteredCards[currentIndex]);
+  if (markedCards.has(globalIdx)) markedCards.delete(globalIdx);
+  else markedCards.add(globalIdx);
+  renderCard();
+}
+
+function shuffleCards() {
+  for (let i = filteredCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filteredCards[i], filteredCards[j]] = [filteredCards[j], filteredCards[i]];
+  }
+  currentIndex = 0;
+  renderCard();
+}
+
+function resetProgress() {
+  seenCards.clear();
+  markedCards.clear();
+  currentIndex = 0;
+  filterCards();
+  renderCard();
+}
+
+function updateProgress() {
+  const relevantCards = currentLesson === 'all' ? allCards : allCards.filter(c => c.lesson === currentLesson);
+  const seen = relevantCards.filter((c, i) => seenCards.has(allCards.indexOf(c))).length;
+  const marked = relevantCards.filter((c, i) => markedCards.has(allCards.indexOf(c))).length;
+  const total = relevantCards.length;
+  const pct = total > 0 ? Math.round((seen / total) * 100) : 0;
+
+  document.getElementById('progressText').textContent = `נצפו: ${seen}/${total} | מסומנים: ${marked} | ${pct}%`;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') prevCard();
+  else if (e.key === 'ArrowLeft') nextCard();
+  else if (e.key === ' ') { e.preventDefault(); flipCard(); }
+  else if (e.key.toLowerCase() === 'm') toggleMark();
+});
+
+init();
+</script>
+</body>
+</html>
